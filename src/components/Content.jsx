@@ -3,73 +3,108 @@ import categories from "../categories";
 import { BarChart } from "./BarChart";
 
 function Content() {
-    const [selected, setSelected] = useState();
-    const [productSelect, setProductSelect] = useState([]);
-    const [brandSelect, setBrandSelect] = useState([]);
+    const [selected, setSelected] = useState(
+        categories ? categories[0].products[0].brands[0] : 0
+    );
+    const [productSelect, setProductSelect] = useState(categories ? categories[0].products : 0);
+    const [brandSelect, setBrandSelect] = useState(
+        categories ? categories[0].products[0].brands : 0
+    );
 
     return (
         <main className="sm:pt-40 p-10">
             <div className="flex gap-5 sm:flex-row flex-col mb-20">
-                <select
-                    id="countries"
-                    className=" border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
-                >
-                    <option
-                        onClick={() => {
-                            setProductSelect([]);
-                            setBrandSelect([]);
-                        }}
+                <div className="block w-full p-2.5">
+                    <label className="block">
+                        <span className="block text-sm font-medium text-gray-300 float-left ml-3 mb-1">
+                            Category
+                        </span>
+                    </label>
+                    <select
+                        id="countries"
+                        className="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                     >
-                        Choose a category
-                    </option>
-                    {categories.map((category) => (
-                        <>
+                        <option disabled>Choose a category</option>
+                        {categories.map((category, index) => (
+                            <>
+                                <option
+                                    key={category.name + index}
+                                    value={category.name}
+                                    onClick={() => {
+                                        setProductSelect(category.products);
+                                        setBrandSelect(
+                                            category.products[0].brands
+                                        );
+                                        setSelected(
+                                            category.products[0].brands[0]
+                                        );
+                                        console.log(category);
+                                    }}
+                                >
+                                    {category.name}
+                                </option>
+                            </>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="block w-full p-2.5">
+                    <label className="block">
+                        <span className="block text-sm font-medium text-gray-300 float-left ml-3 mb-1">
+                            Product
+                        </span>
+                    </label>
+                    <select
+                        id="countries"
+                        className="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                    >
+                        <option
+                            disabled
+                            onClick={() => {
+                                setBrandSelect([]);
+                            }}
+                        >
+                            Choose a product
+                        </option>
+                        {productSelect.map((product, index) => (
                             <option
-                                value={category.name}
-                                onClick={() =>
-                                    setProductSelect(category.products)
-                                }
+                                key={product.name + index}
+                                value={product.name}
+                                onClick={() => {
+                                    setBrandSelect(product.brands);
+                                    setSelected(product.brands[0]);
+                                }}
                             >
-                                {category.name}
+                                {product.name}
                             </option>
-                        </>
-                    ))}
-                </select>
-                <select
-                    id="countries"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                >
-                    <option
-                        onClick={() => {
-                            setBrandSelect([]);
-                        }}
+                        ))}
+                    </select>
+                </div>
+
+                <div className="block w-full p-2.5">
+                    <label className="block">
+                        <span className="block text-sm font-medium text-gray-300 float-left ml-3 mb-1">
+                            Brand
+                        </span>
+                    </label>
+                    <select
+                        id="countries"
+                        className="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                     >
-                        Choose a product
-                    </option>
-                    {productSelect.map((product) => (
-                        <option
-                            value={product.name}
-                            onClick={() => setBrandSelect(product.brands)}
-                        >
-                            {product.name}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    id="countries"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                >
-                    <option>Choose a brand</option>
-                    {brandSelect.map((brand) => (
-                        <option
-                            value={brand.name}
-                            onClick={() => setSelected(brand)}
-                        >
-                            {brand.name}
-                        </option>
-                    ))}
-                </select>
+                        <option disabled>Choose a brand</option>
+                        {brandSelect.map((brand, index) => (
+                            <option
+                                key={brand.name + index}
+                                value={brand.name}
+                                onClick={() => setSelected(brand)}
+                            >
+                                {brand.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
+
             {selected && <BarChart chartData={selected} />}
 
             {!selected && (
